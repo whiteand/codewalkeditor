@@ -56,7 +56,7 @@ body {
 .file-content {
   border: 3px solid #333;
   font-family: Consolas;
-  min-width: 66vw;  
+  min-width: 66vw;
   max-height: 100%;
   overflow-y: scroll
 }
@@ -113,6 +113,7 @@ body {
   margin: 5px auto;\
   padding: 10px;
   overflow: scroll;
+  min-width: 10vw;
 }
 .step {
   background: #aaa;
@@ -402,6 +403,8 @@ const steps = [
       methods: {
         changeCurrentFile: function(newFile) {
           this.currentFile = newFile;
+          if (this.currentStep === undefined)
+            return;
           this.currentSelection = (this.currentStep.filename === newFile.filename)
               ? {"from": this.currentStep.selectFrom, "to": this.currentStep.selectTo}
               : null;
@@ -456,7 +459,6 @@ const steps = [
           this.steps.push(step);
         },
         onRemoveStep: function(step) {
-          console.log("Remove", step)
           this.steps = this.steps.filter(e=>e!==step);
         },
         removeCurrentFile: function() {
@@ -465,6 +467,7 @@ const steps = [
           const currentFile = this.currentFile;
           this.steps = this.steps.filter(step=>step.filename !== currentFile.filename);
           this.files = this.files.filter(file=>file !== currentFile);
+          this.currentStepIndex = 0;
           this.changeCurrentFile(this.files[0]);
         }
 
