@@ -1,3 +1,4 @@
+const title = "Add to campaign works";
 const files = [
   new File("main.go", "package main;\n\nfunc main() {\n  fmt.Println(\"Something new!\");\n}")
 ];

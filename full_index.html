@@ -110,7 +110,7 @@ body {
   background: #eaeaea;
   border: 1px solid #333;
   display: block;
-  margin: 5px auto;\
+  margin: 5px auto;
   padding: 10px;
   overflow: scroll;
   min-width: 10vw;
@@ -375,7 +375,7 @@ body {
     let vm = new Vue({
       el: "#app",
       data: {
-        title: "Codewalk introduction",
+        title: title,
         files: files,
         steps: steps,
         currentStepIndex: 0,
@@ -391,8 +391,9 @@ body {
         },
         inputs: function() {
           const files = this.files.map(file=>`new File("${file.filename}", ${JSON.stringify(file.content)})`).join(',\n\t');
-          const steps = this.steps.map(step=>`new Step("${step.title}", ${JSON.stringify(step.content)}, "${step.filename}", ${step.selectFrom}, ${step.selectTo})`).join(',\n\t');
-          return `const files = [
+          const steps = this.steps.map(step=>`new Step(${JSON.stringify(step.title)}, ${JSON.stringify(step.content)}, "${step.filename}", ${step.selectFrom}, ${step.selectTo})`).join(',\n\t');
+          return `const title = ${JSON.stringify(this.title)};
+const files = [
   ${files}
 ];
 const steps = [
@@ -448,9 +449,11 @@ const steps = [
         },
         addStep: function() {
           const filename = prompt("Enter step's filename:", this.currentFile.filename);
-          if (this.files.findIndex(e=>e.filename === filename) === -1) {
+          if (!filename || !filename.trim() || this.files.findIndex(e=>e.filename === filename) === -1) {
             alert(`There is no such file "${filename}"`);
+            return;
           }
+          console.log(`File name: ${filename}`)
           const title = prompt("Enter the step title: ");
           const content = prompt('enter the step content:');
           const from = (+prompt("Enter the selection line number to start from"))-1;
@@ -460,6 +463,7 @@ const steps = [
         },
         onRemoveStep: function(step) {
           this.steps = this.steps.filter(e=>e!==step);
+          this.currentStepIndex = 0;
         },
         removeCurrentFile: function() {
           if (this.files.length <= 1)
